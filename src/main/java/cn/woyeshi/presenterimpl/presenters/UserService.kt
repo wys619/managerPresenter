@@ -1,6 +1,7 @@
 package cn.woyeshi.presenterimpl.presenters
 
 import cn.woyeshi.entity.beans.manager.LoginInfo
+import cn.woyeshi.entity.beans.manager.VerifyCodeInfo
 import cn.woyeshi.presenter.base.BaseService
 import cn.woyeshi.presenter.base.RetrofitUtils
 import io.reactivex.Observable
@@ -15,6 +16,10 @@ interface IUserService {
     @GET("user/")
     fun login(@Query("userName") userName: String, @Query("password") password: String): Observable<LoginInfo>
 
+    @GET("verifyCode/")
+    fun getVerifyCode(@Query("phone") phone: String): Observable<VerifyCodeInfo>
+
+
 }
 
 class LoginService : BaseService() {
@@ -24,5 +29,7 @@ class LoginService : BaseService() {
     fun login(userName: String, password: String): Observable<LoginInfo> {
         return observe(userService.login(userName, password))
     }
+
+
 
 }
