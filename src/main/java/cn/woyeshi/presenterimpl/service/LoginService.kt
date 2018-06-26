@@ -1,6 +1,7 @@
-package cn.woyeshi.presenterimpl.presenters
+package cn.woyeshi.presenterimpl.service
 
-import cn.woyeshi.entity.beans.manager.LoginInfo
+import cn.woyeshi.entity.BaseResponse
+import cn.woyeshi.entity.beans.manager.UserInfo
 import cn.woyeshi.entity.beans.manager.VerifyCodeInfo
 import cn.woyeshi.presenter.base.BaseService
 import cn.woyeshi.presenter.base.RetrofitUtils
@@ -14,7 +15,7 @@ import retrofit2.http.Query
 interface IUserService {
 
     @GET("user/")
-    fun login(@Query("userName") userName: String, @Query("password") password: String): Observable<LoginInfo>
+    fun login(@Query("userName") userName: String, @Query("password") password: String): Observable<BaseResponse<UserInfo>>
 
     @GET("verifyCode/")
     fun getVerifyCode(@Query("phone") phone: String): Observable<VerifyCodeInfo>
@@ -26,7 +27,7 @@ class LoginService : BaseService() {
 
     private var userService: IUserService = RetrofitUtils.create(IUserService::class.java)
 
-    fun login(userName: String, password: String): Observable<LoginInfo> {
+    fun login(userName: String, password: String): Observable<BaseResponse<UserInfo>> {
         return observe(userService.login(userName, password))
     }
 
