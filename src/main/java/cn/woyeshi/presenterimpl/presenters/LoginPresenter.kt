@@ -13,7 +13,7 @@ import io.reactivex.Observable
  * Created by wys on 2017/11/8.
  */
 interface ILoginView : IBaseView {
-    fun onLoginRequestSuccess(loginInfo: BaseResponse<UserInfo>)
+    fun onLoginRequestSuccess(loginInfo: List<UserInfo>)
     fun onLoginRequestError(e: Throwable)
 }
 
@@ -26,9 +26,12 @@ class LoginPresenter<T : ILoginView>(t: T) : BasePresenter<T>(t), ILoginPresente
     private val loginService = LoginService()
 
     override fun login(userName: String, password: String) {
-        val observer: Observable<BaseResponse<UserInfo>> = loginService.login(userName, password)
-        val ss = observer.subscribeWith(object : BaseDisposableObserver<BaseResponse<UserInfo>, UserInfo>(observer) {
-
+        val observer: Observable<List<UserInfo>> = loginService.login(userName, password)
+        val ss = observer.subscribeWith(object : BaseDisposableObserver<List<UserInfo>>(observer) {
+            override fun onNext(t: List<UserInfo>) {
+                super.onNext(t)
+                iView.onLoginRequestSuccess(t)
+            }
         })
         addSubscription(ss)
     }
