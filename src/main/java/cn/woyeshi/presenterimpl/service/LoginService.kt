@@ -6,6 +6,7 @@ import cn.woyeshi.entity.beans.manager.VerifyCodeInfo
 import cn.woyeshi.presenter.base.BaseObservable
 import cn.woyeshi.presenter.base.BaseService
 import cn.woyeshi.presenter.base.RetrofitUtils
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,7 +17,7 @@ import retrofit2.http.Query
 interface IUserService {
 
     @GET("user/")
-    fun login(@Query("userName") userName: String, @Query("password") password: String): Observable<BaseResponse<List<UserInfo>>>
+    fun login(@Query("userName") userName: String, @Query("password") password: String): Flowable<BaseResponse<List<UserInfo>>>
 
     @GET("verifyCode/")
     fun getVerifyCode(@Query("phone") phone: String): BaseObservable<VerifyCodeInfo>
@@ -28,7 +29,7 @@ class LoginService : BaseService() {
 
     private var userService: IUserService = RetrofitUtils.create(IUserService::class.java)
 
-    fun login(userName: String, password: String): Observable<List<UserInfo>> {
+    fun login(userName: String, password: String): Flowable<BaseResponse<List<UserInfo>>> {
         return observe(userService.login(userName, password))
     }
 
