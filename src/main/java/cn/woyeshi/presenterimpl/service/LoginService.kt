@@ -7,7 +7,6 @@ import cn.woyeshi.presenter.base.BaseObservable
 import cn.woyeshi.presenter.base.BaseService
 import cn.woyeshi.presenter.base.RetrofitUtils
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -29,7 +28,7 @@ class LoginService : BaseService() {
 
     private var userService: IUserService = RetrofitUtils.create(IUserService::class.java)
 
-    fun login(userName: String, password: String): Flowable<BaseResponse<List<UserInfo>>> {
+    fun login(userName: String, password: String): Flowable<List<UserInfo>> {
         return observe(userService.login(userName, password))
     }
 
