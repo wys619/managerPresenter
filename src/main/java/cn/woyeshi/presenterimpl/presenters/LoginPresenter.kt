@@ -1,10 +1,7 @@
 package cn.woyeshi.presenterimpl.presenters
 
 import cn.woyeshi.entity.beans.manager.UserInfo
-import cn.woyeshi.presenter.base.BasePresenter
-import cn.woyeshi.presenter.base.BaseSubscriber
-import cn.woyeshi.presenter.base.IBasePresenter
-import cn.woyeshi.presenter.base.IBaseView
+import cn.woyeshi.presenter.base.*
 import cn.woyeshi.presenterimpl.service.LoginService
 import io.reactivex.Flowable
 
@@ -12,7 +9,7 @@ import io.reactivex.Flowable
  * Created by wys on 2017/11/8.
  */
 interface ILoginView : IBaseView {
-    fun onLoginRequestSuccess(loginInfo: List<UserInfo>)
+    fun onLoginRequestSuccess(loginInfo: UserInfo)
 }
 
 interface ILoginPresenter<T : ILoginView> : IBasePresenter<T> {
@@ -27,7 +24,11 @@ class LoginPresenter<T : ILoginView>(t: T) : BasePresenter<T>(t), ILoginPresente
         val flowAble: Flowable<List<UserInfo>> = loginService.login(userName, password)
         flowAble.subscribe(object : BaseSubscriber<List<UserInfo>>(flowAble) {
             override fun onNext(t: List<UserInfo>) {
-                iView.onLoginRequestSuccess(t)
+                if (t.size == 1) {
+                    iView.onLoginRequestSuccess(t[0])
+                } else {
+                    throw BaseException(-1, "登录失败")
+                }
             }
         })
     }
