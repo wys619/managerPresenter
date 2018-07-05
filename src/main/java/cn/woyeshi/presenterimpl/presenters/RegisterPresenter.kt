@@ -1,33 +1,51 @@
 package cn.woyeshi.presenterimpl.presenters
 
+import cn.woyeshi.entity.BaseResponse
+import cn.woyeshi.entity.beans.manager.UserInfo
 import cn.woyeshi.presenter.base.BasePresenter
-import cn.woyeshi.presenter.base.IBasePresenter
+import cn.woyeshi.presenter.base.BaseSubscriber
 import cn.woyeshi.presenter.base.IBaseView
-import cn.woyeshi.presenterimpl.service.RegisterService
+import cn.woyeshi.presenter.base.RetrofitUtils
+import io.reactivex.Flowable
+import retrofit2.http.GET
+import retrofit2.http.POST
 
 interface IRegisterView : IBaseView {
+    fun onVerifyCodeGetSuccess()
+    fun onRegisterSuccess(t: UserInfo)
+}
+
+interface IRegisterService {
+
+    @GET("code/")
+    fun getVerifyCode(phone: String): Flowable<BaseResponse<Unit>>
+
+    @POST("usr/")
+    fun register(phone: String, pwd: String, code: String): Flowable<BaseResponse<UserInfo>>
 
 }
 
-interface IRegisterPresenter<T : IRegisterView> : IBasePresenter<T> {
-    fun getVerifyCode(phone: String)
-    fun register(phone: String, pwd: String, code: String)
-}
+class RegisterPresenter<T : IRegisterView>(t: T) : BasePresenter<T>(t) {
 
-class RegisterPresenter<T : IRegisterView>(t: T) : BasePresenter<T>(t), IRegisterPresenter<T> {
-
-    private val registerService = RegisterService()
+    val registerService = RetrofitUtils.create(IRegisterService::class.java)
 
 
-    override fun getVerifyCode(phone: String) {
-
-
+    fun getVerifyCode(phone: String) {
+        val flowAble = observe(registerService.getVerifyCode(phone))
+        flowAble.subscribe(object : BaseSubscriber<Unit>(flowAble) {
+            override fun onNext(t: Unit) {
+                iView.onVerifyCodeGetSuccess()
+            }
+        })
     }
 
-    override fun register(phone: String, pwd: String, code: String) {
-
-
+    fun register(phone: String, pwd: String, code: String) {
+        val flowAble = observe(registerService.register(phone, pwd, code))
+        flowAble.subscribe(object : BaseSubscriber<UserInfo>(flowAble) {
+            override fun onNext(t: UserInfo) {
+                iView.onRegisterSuccess(t)
+            }
+        })
     }
 
 }
-
