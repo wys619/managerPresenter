@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">presenterImpl</string>
+    <string name="string_login_fail">登录失败</string>
 </resources>

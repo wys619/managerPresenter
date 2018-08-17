@@ -3,6 +3,7 @@ package cn.woyeshi.presenterimpl.presenters
 import cn.woyeshi.entity.BaseResponse
 import cn.woyeshi.entity.beans.manager.UserInfo
 import cn.woyeshi.presenter.base.*
+import cn.woyeshi.presenterimpl.R
 import io.reactivex.Flowable
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -32,7 +33,7 @@ class LoginPresenter<T : ILoginView>(t: T) : BasePresenter<T>(t) {
                 if (t.size == 1) {
                     iView.onLoginRequestSuccess(t[0])
                 } else {
-                    throw BaseException(-1, "登录失败")
+                    throw BaseException(-1, getActivity()?.getString(R.string.string_login_fail))
                 }
             }
         })
