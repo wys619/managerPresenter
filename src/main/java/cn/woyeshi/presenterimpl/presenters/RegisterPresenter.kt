@@ -21,8 +21,7 @@ interface IRegisterService {
     @GET("code/")
     fun getVerifyCode(@Query("phone") phone: String, @Query("type") type: String): Flowable<BaseResponse<Unit>>
 
-    @POST("user/")
-    fun register(@Query("userName") phone: String, @Query("password") pwd: String, @Query("code") code: String): Flowable<BaseResponse<UserInfo>>
+
 
 }
 
@@ -40,13 +39,6 @@ class RegisterPresenter<T : IRegisterView>(t: T) : BasePresenter<T>(t) {
         })
     }
 
-    fun register(phone: String, pwd: String, code: String) {
-        val flowAble = observe(registerService.register(phone, pwd, code))
-        flowAble.subscribe(object : BaseSubscriber<UserInfo>(flowAble) {
-            override fun onNext(t: UserInfo) {
-                iView.onRegisterSuccess(t)
-            }
-        })
-    }
+
 
 }
