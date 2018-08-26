@@ -26,7 +26,7 @@ interface IFileUploadView : IBaseView {
 interface IFileUploadService {
 
     @Multipart
-    @POST("images/uploadImage/")
+    @POST("images/upload/")
     fun uploadImage(@Part("description") description: RequestBody, @Part file: MultipartBody.Part): Flowable<BaseResponse<UploadResult>>
 
 }
