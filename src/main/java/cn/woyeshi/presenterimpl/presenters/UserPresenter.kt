@@ -2,6 +2,7 @@ package cn.woyeshi.presenterimpl.presenters
 
 import cn.woyeshi.entity.BaseResponse
 import cn.woyeshi.entity.beans.manager.UserInfo
+import cn.woyeshi.entity.utils.ContextHolder
 import cn.woyeshi.presenter.base.*
 import cn.woyeshi.presenterimpl.R
 import io.reactivex.Flowable
@@ -28,6 +29,11 @@ interface IUserService {
     fun updateUser(@Body user: UserInfo): Flowable<BaseResponse<Unit>>
 }
 
+abstract class UserView : IUserView {
+
+
+}
+
 class UserPresenter<T : IUserView>(t: T) : BasePresenter<T>(t) {
 
     private var userService: IUserService = RetrofitUtils.create(IUserService::class.java)
@@ -37,6 +43,7 @@ class UserPresenter<T : IUserView>(t: T) : BasePresenter<T>(t) {
         flowAble.subscribe(object : BaseSubscriber<List<UserInfo>>(flowAble) {
             override fun onNext(t: List<UserInfo>) {
                 if (t.size == 1) {
+                    ContextHolder.token = t[0].token
                     iView.onLoginRequestSuccess(t[0])
                 } else {
                     throw BaseException(-1, getActivity()?.getString(R.string.string_login_fail))
@@ -49,6 +56,7 @@ class UserPresenter<T : IUserView>(t: T) : BasePresenter<T>(t) {
         val flowAble = observe(userService.register(phone, pwd, code))
         flowAble.subscribe(object : BaseSubscriber<UserInfo>(flowAble) {
             override fun onNext(t: UserInfo) {
+                ContextHolder.token = t.token
                 iView.onRegisterSuccess(t)
             }
         })
